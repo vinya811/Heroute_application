@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background-color: #f1edf7;
+  color: #0f172a;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Luminous, sparkling iridescent color gradient for inside the app */
+.bg-sparkle-app {
+  background-color: #fcf9fe;
+  background-image: 
+    radial-gradient(ellipse at 15% 5%, rgba(244, 114, 182, 0.22) 0%, transparent 48%),
+    radial-gradient(ellipse at 85% 15%, rgba(192, 132, 252, 0.26) 0%, transparent 52%),
+    radial-gradient(ellipse at 50% 45%, rgba(251, 207, 232, 0.28) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 80%, rgba(167, 139, 250, 0.22) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 90%, rgba(254, 215, 170, 0.20) 0%, transparent 48%),
+    linear-gradient(180deg, #fbf7fe 0%, #fdf2f8 50%, #fbf6fd 100%);
+  background-attachment: local;
+}
+
+/* Leaflet Map Interactive Styles */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  cursor: grab !important;
+  user-select: none;
+  touch-action: pan-x pan-y;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  background: #e2e8f0 !important;
+}
+
+.leaflet-container:active {
+  cursor: grabbing !important;
+}
+
+.leaflet-grab {
+  cursor: grab !important;
+}
+
+.leaflet-grabbing {
+  cursor: grabbing !important;
+}
+
+/* Map Popups */
+.leaflet-popup-content-wrapper {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-radius: 16px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 4px !important;
+}
+
+.leaflet-popup-tip {
+  background: #ffffff !important;
+}
+
+.custom-map-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.custom-map-icon:hover {
+  transform: scale(1.15);
+}
+
+/* Hide scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
