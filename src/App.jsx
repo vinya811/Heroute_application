@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import WelcomeScreen from './components/WelcomeScreen';
+import DashboardScreen from './components/DashboardScreen';
 import RoutesScreen from './components/RoutesScreen';
 import MapScreen from './components/MapScreen';
 import FactorsScreen from './components/FactorsScreen';
@@ -14,7 +15,7 @@ import { PREFERENCE_PROFILES, calculateSafetyScore } from './utils/scoringEngine
 import { explainRouteComparison } from './services/geminiExplainer';
 
 export default function App() {
-  // Page Navigation State ('welcome' | 'routes' | 'map' | 'factors' | 'sos' | 'profile')
+  // Page Navigation State ('welcome' | 'dashboard' | 'routes' | 'map' | 'factors' | 'sos' | 'profile')
   const [currentPage, setCurrentPage] = useState('welcome');
 
   // Auth & Profile State
@@ -95,12 +96,22 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#ede8f5] flex flex-col items-center justify-center p-0 sm:p-4 selection:bg-[#b51253] selection:text-white">
-      {/* Smartphone Container with Sparkle Colors applied inside the app */}
+      {/* Smartphone Container */}
       <div className="relative w-full max-w-[430px] my-0 sm:my-3 shadow-[0_25px_60px_-15px_rgba(100,50,150,0.22)] rounded-none sm:rounded-[40px] border-0 sm:border-[6px] border-white/95 bg-sparkle-app overflow-hidden transition-all">
         
         {/* Active Page Views */}
         {currentPage === 'welcome' && (
           <WelcomeScreen onGetStarted={() => setCurrentPage('routes')} />
+        )}
+
+        {currentPage === 'dashboard' && (
+          <DashboardScreen
+            user={user}
+            onNavigateToRouteInput={() => setCurrentPage('routes')}
+            onNavigateToProfile={() => setCurrentPage('profile')}
+            onOpenSOS={() => setCurrentPage('sos')}
+            onOpenAuth={() => setIsAuthOpen(true)}
+          />
         )}
 
         {currentPage === 'routes' && (
@@ -120,6 +131,7 @@ export default function App() {
             user={user}
             onOpenAuth={() => setIsAuthOpen(true)}
             onLogout={handleLogout}
+            onNavigateToProfile={() => setCurrentPage('profile')}
           />
         )}
 

@@ -1,16 +1,17 @@
 import React from 'react';
-import { Compass, Map, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { Compass, Map, ShieldCheck, AlertTriangle, User } from 'lucide-react';
 
 export default function BottomNav({ activeTab, onSelectTab }) {
   const tabs = [
     { id: 'routes', label: 'Routes', icon: Compass },
     { id: 'map', label: 'Map View', icon: Map },
     { id: 'factors', label: 'Safety', icon: ShieldCheck },
+    { id: 'profile', label: 'Profile', icon: User },
     { id: 'sos', label: 'SOS', icon: AlertTriangle, isAlert: true }
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-100 py-2.5 px-4 shadow-xl max-w-md mx-auto rounded-b-[36px]">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-100 py-2.5 px-2 shadow-xl max-w-md mx-auto rounded-b-[36px]">
       <div className="flex items-center justify-around">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -21,7 +22,8 @@ export default function BottomNav({ activeTab, onSelectTab }) {
               <button
                 key={tab.id}
                 onClick={() => onSelectTab(tab.id)}
-                className={`flex flex-col items-center gap-0.5 px-3 py-1 rounded-2xl transition-all ${
+                type="button"
+                className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-2xl transition-all cursor-pointer ${
                   isActive
                     ? 'text-red-600 font-bold'
                     : 'text-slate-400 hover:text-red-500'
@@ -39,7 +41,8 @@ export default function BottomNav({ activeTab, onSelectTab }) {
             <button
               key={tab.id}
               onClick={() => onSelectTab(tab.id)}
-              className={`flex flex-col items-center gap-0.5 px-3 py-1 rounded-2xl transition-all ${
+              type="button"
+              className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-2xl transition-all cursor-pointer ${
                 isActive
                   ? 'text-[#b51253] font-black'
                   : 'text-slate-400 hover:text-slate-700'
