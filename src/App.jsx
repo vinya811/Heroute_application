@@ -4,16 +4,22 @@ import RoutesScreen from './components/RoutesScreen';
 import MapScreen from './components/MapScreen';
 import FactorsScreen from './components/FactorsScreen';
 import SOSScreen from './components/SOSScreen';
+import ProfileScreen from './components/ProfileScreen';
 import BottomNav from './components/BottomNav';
 import AIExplanationModal from './components/AIExplanationModal';
+import LoginModal from './components/LoginModal';
 
 import { DEMO_SCENARIOS, SAFETY_POIS, INITIAL_ROUTES } from './data/mockRoutes';
 import { PREFERENCE_PROFILES, calculateSafetyScore } from './utils/scoringEngine';
 import { explainRouteComparison } from './services/geminiExplainer';
 
 export default function App() {
-  // Page Navigation State ('welcome' | 'routes' | 'map' | 'factors' | 'sos')
+  // Page Navigation State ('welcome' | 'routes' | 'map' | 'factors' | 'sos' | 'profile')
   const [currentPage, setCurrentPage] = useState('welcome');
+
+  // Auth & Profile State
+  const [user, setUser] = useState(null);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   // Route & Scenario State
   const [currentScenario, setCurrentScenario] = useState(DEMO_SCENARIOS[0]);
@@ -21,7 +27,7 @@ export default function App() {
   const [customWeights, setCustomWeights] = useState(PREFERENCE_PROFILES.safety.weights);
   const [selectedRouteId, setSelectedRouteId] = useState('route-a');
 
-  // AI Explanation Modal State (Active ONLY from Routes Screen)
+  // AI Explanation Modal State
   const [isExplainOpen, setIsExplainOpen] = useState(false);
   const [targetExplainRoute, setTargetExplainRoute] = useState(null);
   const [explanationText, setExplanationText] = useState('');
@@ -38,6 +44,27 @@ export default function App() {
     });
   }, [customWeights]);
 
+  // Handle Login Submission (+10 points added on login)
+  const handleLoginSuccess = (userData) => {
+    const newUser = {
+      ...userData,
+      points: (userData.points || 100) + 10,
+      safetyBadges: ['Night Walker', 'Verified Explorer', 'Community Guard'],
+      savedRoutes: routesWithScores
+    };
+    setUser(newUser);
+    setIsAuthOpen(false);
+    setCurrentPage('profile');
+  };
+
+  // Handle Logout Trigger
+  const handleLogout = () => {
+    setUser(null);
+    if (currentPage === 'profile') {
+      setCurrentPage('routes');
+    }
+  };
+
   // Handle Profile Selection (Safety-Aware, Balanced, Fastest)
   const handleSelectProfile = (profileKey) => {
     setActiveProfile(profileKey);
@@ -47,7 +74,7 @@ export default function App() {
     }
   };
 
-  // Handle "Why this route?" AI Explanation trigger (ONLY from Routes Screen)
+  // Handle "Why this route?" AI Explanation trigger
   const handleOpenExplain = async (route) => {
     setTargetExplainRoute(route);
     setIsExplainOpen(true);
@@ -70,7 +97,8 @@ export default function App() {
     <div className="min-h-screen bg-[#ede8f5] flex flex-col items-center justify-center p-0 sm:p-4 selection:bg-[#b51253] selection:text-white">
       {/* Smartphone Container with Sparkle Colors applied inside the app */}
       <div className="relative w-full max-w-[430px] my-0 sm:my-3 shadow-[0_25px_60px_-15px_rgba(100,50,150,0.22)] rounded-none sm:rounded-[40px] border-0 sm:border-[6px] border-white/95 bg-sparkle-app overflow-hidden transition-all">
-        {/* Active Page View */}
+        
+        {/* Active Page Views */}
         {currentPage === 'welcome' && (
           <WelcomeScreen onGetStarted={() => setCurrentPage('routes')} />
         )}
@@ -89,6 +117,9 @@ export default function App() {
               setCurrentScenario(s);
               setSelectedRouteId('route-a');
             }}
+            user={user}
+            onOpenAuth={() => setIsAuthOpen(true)}
+            onLogout={handleLogout}
           />
         )}
 
@@ -120,7 +151,15 @@ export default function App() {
           />
         )}
 
-        {/* Global Mobile Bottom Navigation Bar (Shown on main app pages) */}
+        {currentPage === 'profile' && (
+          <ProfileScreen
+            user={user}
+            onLogout={handleLogout}
+            onOpenAuth={() => setIsAuthOpen(true)}
+          />
+        )}
+
+        {/* Global Mobile Bottom Navigation Bar */}
         {currentPage !== 'welcome' && currentPage !== 'sos' && (
           <BottomNav
             activeTab={currentPage}
@@ -136,6 +175,13 @@ export default function App() {
           alternativeRoute={routesWithScores.find((r) => r.id !== targetExplainRoute?.id)}
           explanation={explanationText}
           isLoading={isExplaining}
+        />
+
+        {/* Global Login / Sign-Up Modal */}
+        <LoginModal
+          isOpen={isAuthOpen}
+          onClose={() => setIsAuthOpen(false)}
+          onLoginSuccess={handleLoginSuccess}
         />
       </div>
     </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Polyline, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { Clock, Navigation, AlertTriangle, ArrowLeft, Shield, MapPin, RotateCcw } from 'lucide-react';
+import { Clock, Navigation, AlertTriangle, ArrowLeft, Shield, MapPin, RotateCcw, CheckCircle2 } from 'lucide-react';
 import BrandTitle from './BrandTitle';
 
 // Dynamic map view recenter hook
@@ -94,6 +94,7 @@ export default function MapScreen({
   onBackToRoutes
 }) {
   const [filterType, setFilterType] = useState('all');
+  const [navitingToast, setNavigatingToast] = useState('');
 
   const activeRoute = routes.find((r) => r.id === selectedRouteId) || routes[0];
   const center = [
@@ -106,8 +107,15 @@ export default function MapScreen({
     ? pois
     : pois.filter((p) => p.type === filterType);
 
+  const handleStartNavigation = () => {
+    setNavigatingToast(`Turn-by-turn guidance active on ${activeRoute.shortName}. Stay safe!`);
+    setTimeout(() => {
+      setNavigatingToast('');
+    }, 4000);
+  };
+
   return (
-    <div className="min-h-screen bg-sparkle-app text-slate-800 pb-24 max-w-md mx-auto flex flex-col">
+    <div className="min-h-screen bg-sparkle-app text-slate-800 pb-24 max-w-md mx-auto flex flex-col relative">
       {/* 1. TOP HEADER */}
       <header className="bg-white/95 backdrop-blur-md px-4 py-3 border-b border-purple-100/60 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-2">
@@ -129,6 +137,14 @@ export default function MapScreen({
           <span>SOS</span>
         </button>
       </header>
+
+      {/* Modern In-App Toast Banner */}
+      {navitingToast && (
+        <div className="absolute top-16 left-4 right-4 z-[500] bg-emerald-600 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 animate-in fade-in slide-in-from-top-2 duration-300">
+          <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-emerald-200" />
+          <p className="text-xs font-bold leading-snug">{navitingToast}</p>
+        </div>
+      )}
 
       {/* 2. ROUTE ALTERNATIVE SELECTOR BAR */}
       <div className="bg-white/90 backdrop-blur-md px-4 py-2.5 border-b border-purple-100/60">
@@ -320,7 +336,8 @@ export default function MapScreen({
 
         {/* Start Navigation Action */}
         <button
-          onClick={() => alert(`Starting turn-by-turn guidance on ${activeRoute.shortName}... Stay safe!`)}
+          type="button"
+          onClick={handleStartNavigation}
           className="w-full py-3.5 px-4 rounded-2xl text-xs font-bold uppercase tracking-wider text-white bg-gradient-to-r from-[#b51253] via-[#a83279] to-[#6e2996] shadow-lg shadow-pink-600/25 hover:brightness-105 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
         >
           <Navigation className="w-4 h-4 fill-white" />

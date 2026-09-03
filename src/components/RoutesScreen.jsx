@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, Navigation, Sparkles, ChevronRight, Repeat, ArrowRight } from 'lucide-react';
+import { Clock, Navigation, Sparkles, ChevronRight, Repeat, LogIn, LogOut, User } from 'lucide-react';
 import { DEMO_SCENARIOS } from '../data/mockRoutes';
 import BrandTitle from './BrandTitle';
 
@@ -12,7 +12,11 @@ export default function RoutesScreen({
   activeProfile,
   onSelectProfile,
   currentScenario,
-  onSelectScenario
+  onSelectScenario,
+  // Auth & Profile Props
+  user,
+  onOpenAuth,
+  onLogout
 }) {
   return (
     <div className="min-h-screen bg-sparkle-app text-slate-800 pb-24 max-w-md mx-auto">
@@ -29,10 +33,26 @@ export default function RoutesScreen({
           <BrandTitle size="text-lg" showSubtitle={true} />
         </div>
 
-        {/* Live Status Badge */}
-        <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 shadow-sm">
-          Live GPS
-        </span>
+        {/* Top Right Corner: Pink Log In button (if logged out) or Red Log Out button (if logged in) */}
+        {user ? (
+          <button
+            type="button"
+            onClick={onLogout}
+            className="flex items-center gap-1.5 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 px-3 py-1.5 rounded-full shadow-md shadow-rose-600/20 active:scale-95 transition-all"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Log Out</span>
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={onOpenAuth}
+            className="flex items-center gap-1.5 text-xs font-bold text-white bg-gradient-to-r from-[#b51253] to-[#8432a8] hover:brightness-105 px-3 py-1.5 rounded-full shadow-md shadow-pink-600/20 active:scale-95 transition-all cursor-pointer"
+          >
+            <LogIn className="w-3.5 h-3.5" />
+            <span>Log In</span>
+          </button>
+        )}
       </header>
 
       <div className="p-4 space-y-4">
@@ -207,7 +227,7 @@ export default function RoutesScreen({
                   ✓ {route.highlights[0]}
                 </p>
 
-                {/* Action Buttons: "Why this route?" is ONLY here */}
+                {/* Action Buttons */}
                 <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
                   <button
                     type="button"
